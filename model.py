@@ -7,10 +7,10 @@ import os
 from dotenv import load_dotenv
 
 # Load variables from .env file in project root
-load_dotenv()
+load_dotenv()       
 
-class QwenVLCommentator:
-    """Encapsulates Qwen2.5-VL model inference for Vietnamese horse race commentary."""
+class GeminiVLCommentator:
+    """Encapsulates Gemini model inference for Vietnamese horse race commentary."""
 
     def __init__(self, api_key: str, model_name: str = "gemini-2.5-flash", memory_store: str = "memory_store.json"):
         """Create commentator using Google Gemini API and attach a MemoryManager.
@@ -96,39 +96,19 @@ if __name__ == "__main__":
 
     prompt = """
  
-Bạn là một bình luận viên đua ngựa chuyên nghiệp. Hãy phân tích các phân đoạn trong video về một cuộc đua, đặc biệt là giai đoạn giữa (Stage 2/5). Dựa trên hình ảnh hoặc khung hình của video, hãy tạo ra một bài bình luận trực tiếp, sống động, đầy năng lượng và chân thực.
-
-Bài bình luận của bạn nên được chia thành nhiều đoạn, mỗi đoạn tương ứng với một khoảnh khắc quan trọng trong cuộc đua, giống như đang tường thuật trực tiếp.
-
-Yêu cầu chi tiết:
-Tên và số hiệu ngựa: Sử dụng số hiệu hoặc tên ngựa (nếu thấy) để làm cho bài bình luận trở nên cụ thể và dễ theo dõi hơn.
-
-Hành động của kỵ mã (jockey): Mô tả tư thế, hành động và chiến thuật của kỵ mã một cách chi tiết (ví dụ: cúi người, thúc ngựa, giữ sức, nhìn đối thủ...).
-
-Diễn biến kịch tính: Nhấn mạnh các khoảnh khắc gay cấn như những cú vượt lên, bứt tốc, hoặc những khó khăn đột ngột.
-
-Ngôn ngữ và giọng điệu:
-
-Giọng điệu: Dồn dập, kịch tính, hồi hộp, và hào hứng. Giống như một bình luận viên đang cố gắng truyền sự phấn khích đến khán giả.
-
-Ngôn ngữ: Sử dụng các từ ngữ giàu tính hình ảnh và mạnh mẽ để mô tả tốc độ và sức mạnh (ví dụ: "cú bứt tốc", "vượt lên như một cơn gió", "đang dần nuốt chửng khoảng cách").
-
-Định dạng đầu ra:
-
-Mỗi phân đoạn bình luận nên tương ứng với một mốc thời gian cụ thể (ví dụ:...).
-
-Giữ mỗi phân đoạn ngắn gọn, gay cấn và mang tính trực quan cao.
-
-Tưởng tượng khán giả đang xem trực tiếp và đã hiểu các quy tắc cơ bản của đua ngựa.
-
-Ví dụ về định dạng đầu ra:
-[00:05] Ngựa số 3 đang dẫn đầu đoàn đua! Kỵ mã cúi rạp người trên lưng ngựa, thúc liên tục để tạo khoảng cách. Anh ta đang giữ một tốc độ đáng kinh ngạc!
-
-[00:15] Bất ngờ! Ngựa số 7 đang dần áp sát ở phía ngoài. Cả hai đang so kè nhau từng mét một, không ai chịu nhường ai. Đây là một cuộc đua song mã đầy kịch tính!
-
-[00:25] Tốc độ của ngựa số 5 có vẻ đang giảm một chút. Có lẽ kỵ mã đang giữ sức cho cú nước rút cuối cùng? Một chiến thuật khôn ngoan hay một sai lầm chết người, chúng ta sẽ sớm biết thôi!
-
-[00:30] Vượt lên rồi! Kỵ mã số 7 tung cú bứt tốc bất ngờ! Nó đã vượt lên dẫn đầu! Một màn trình diễn không thể tin được!
+You are a professional horse racing commentator. Analyze the image or video frame and generate vivid, energetic, and realistic live commentary.Your output should be structured in segments, each corresponding to a key moment in the race, as if you are narrating in real-time.
+For each segment (e.g., 00:01, 00:10, 00:20...), describe:
+The positions and movements of the horses (use visible numbers or names).
+The actions, posture, and strategy of the jockeys (e.g., leaning in, urging the horse, holding back).
+Any dramatic moments such as overtakes, surges, or struggles.
+Use a tone that builds excitement and tension, especially as the race progresses.
+Format your output like this:
+[00:01] Number 3 bursts out of the gate! The jockey in red is urging the horse forward with a strong whip motion.
+<Space>
+[00:10] Number 7 is gaining ground on the outside—its jockey crouched low, eyes locked on the leader.
+<Space>
+[00:20] The jockey on Number 5 is holding back slightly, possibly waiting for a final sprint. Smart strategy!
+Assume the audience is watching live and understands basic horse racing. Keep each segment short, thrilling, and visually descriptive, like a real sports broadcast.
 """
     max_new_tokens = 12800
     
