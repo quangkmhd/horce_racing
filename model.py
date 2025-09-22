@@ -5,9 +5,7 @@ import re
 from memory_manager import MemoryManager
 import os
 from dotenv import load_dotenv
-
-# Load variables from .env file in project root
-load_dotenv()       
+       
 
 class GeminiVLCommentator:
     """Encapsulates Gemini model inference for Vietnamese horse race commentary."""
@@ -66,8 +64,8 @@ class GeminiVLCommentator:
         # Persist memory
         self.memory.save_segment(segment_id, start, end, commentary)
         return commentary
-    
-    
+
+
     
     @staticmethod
     def _parse_segment(video_path: str) -> Tuple[str, int, int]:
@@ -79,11 +77,15 @@ class GeminiVLCommentator:
         return segment_id, int(start), int(end)
 
 
-if __name__ == "__main__":
+
+def summarize(folder_dir):
+    # Load variables from .env file in project root
+    load_dotenv()
+
     api_key = os.getenv("GOOGLE_GENAI_API_KEY")
     
     # Define the folder containing video chunks
-    chunk_folder = "/home/quangnh58/horce_racing/input_video"
+    chunk_folder = folder_dir
 
     # Build memory store path based on *chunk_folder* name (e.g. DN39s -> memory/DN39s_memory.json)
     memory_dir = os.path.join(os.path.dirname(__file__), "memory")
@@ -91,11 +93,10 @@ if __name__ == "__main__":
     folder_name = os.path.basename(chunk_folder.rstrip("/"))
     memory_store_path = os.path.join(memory_dir, f"{folder_name}_memory.json")
 
-
-    commentator = QwenVLCommentator(api_key=api_key, memory_store=memory_store_path)
+    commentator = GeminiVLCommentator(api_key=api_key, memory_store=memory_store_path)
 
     prompt = """
- 
+
 You are a professional horse racing commentator. Analyze the image or video frame and generate vivid, energetic, and realistic live commentary.Your output should be structured in segments, each corresponding to a key moment in the race, as if you are narrating in real-time.
 For each segment (e.g., 00:01, 00:10, 00:20...), describe:
 The positions and movements of the horses (use visible numbers or names).
@@ -115,9 +116,10 @@ Assume the audience is watching live and understands basic horse racing. Keep ea
     # Lấy tất cả file video trong thư mục chunk
     video_files = [f for f in os.listdir(chunk_folder) if f.endswith('.mp4')]
     video_files.sort()  # Sắp xếp theo thứ tự
-    
+    summary = ""
     for video_file in video_files:
         video_path = os.path.join(chunk_folder, video_file)
         print(f"Processing: {video_file}")
         result = commentator.generate_commentary(video_path, prompt, max_new_tokens)
-        print(result)
+        summary += "\n\n" + result
+    return summary
