@@ -1,7 +1,8 @@
 from moviepy.editor import VideoFileClip
 import os
+import glob
 
-def process_video(input_path, output_folder='folder_chunk'):
+def process_video(input_path, output_folder):
     # Tạo thư mục đầu ra chính
     if not os.path.exists(output_folder):
         os.makedirs(output_folder)
@@ -14,11 +15,10 @@ def process_video(input_path, output_folder='folder_chunk'):
     # Xác định tên video và tạo thư mục con cho nó
     base_name = os.path.splitext(os.path.basename(input_path))[0]
     # Thư mục con cho video hiện tại, vd: folder_chunk/DN39s
-    chunk_folder = os.path.join(output_folder, base_name)
-    os.makedirs(chunk_folder, exist_ok=True)
+    os.makedirs(output_folder, exist_ok=True)
 
     # Chia nhỏ video thành các đoạn 60 giây
-    chunk_duration = 10
+    chunk_duration = 20
     start_time = 0
     chunk_count = 0
 
@@ -31,11 +31,11 @@ def process_video(input_path, output_folder='folder_chunk'):
         chunk = video.subclip(start_time, end_time)
 
         # Thay đổi kích thước và FPS
-        processed_chunk = chunk.resize(newsize=(644, 392)).set_fps(4)
+        processed_chunk = chunk.set_fps(2)
 
         # Tạo tên file đầu ra
         output_path = os.path.join(
-            chunk_folder,
+            output_folder,
             f'{base_name}_chunk_{int(start_time)}_{int(end_time)}.mp4'
         )
 
@@ -48,8 +48,20 @@ def process_video(input_path, output_folder='folder_chunk'):
         start_time = end_time
 
     video.close()
-    print("Done!")
-    
-if __name__ == "__main__":
-    process_video("/home/quangnh58/horce_racing/input_video/DN39s.mp4")
+    print("Video processing complete!")
+
+
+def clear_memory(video_chunk='C:/Users/admin/folder_videos/folder_chunk', memory='C:/Users/admin/Lib/memory/folder_chunk_memory.json'):
+    # Xóa memory
+    os.remove(memory)
+
+    # Tạo mẫu tìm kiếm cho tất cả các tệp .mp4 trong thư mục
+    sample_file = os.path.join(video_chunk, "*.mp4")
+    # Tìm tất cả các tệp khớp với mẫu
+    video_paths = glob.glob(sample_file)
+    # Lặp qua danh sách và xóa từng tệp
+    for video in video_paths:
+        os.remove(video)
+        print(f"Đã xóa: {video}")
+    print('Đã xóa bộ nhớ!')
     
