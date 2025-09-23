@@ -1,6 +1,6 @@
 import streamlit as st
 import os
-from video_processing import process_video
+from video_processing import process_video, clear_memory
 from model import summarize
 
 # --- Cấu hình trang ---
@@ -25,6 +25,7 @@ with col1:
 
     video_to_display = None
 
+
     uploaded_file = st.file_uploader(
         "Kéo thả file video vào đây hoặc nhấp để chọn file:",
         type=["mp4", "avi", "mov"],
@@ -34,7 +35,6 @@ with col1:
         st.success("Video đã được tải lên thành công!")
         video_input_provided = True
         video_to_display = uploaded_file
-
 
     # Hiển thị video đã được nhập
     if video_to_display:
@@ -53,15 +53,16 @@ with col2:
     if video_input_provided and video_to_display:
         with st.spinner("Đang xử lý video và tạo tóm tắt... ⏳"):
             # Lưu video input vào bộ nhớ
-            os.makedirs(os.path.dirname('/input_video/video.mp4'), exist_ok=True)
-            with open('/input_video/video.mp4', "wb") as f:
+            os.makedirs(os.path.dirname('C:/Users/admin/folder_videos/video.mp4'), exist_ok=True)
+            with open('C:/Users/admin/folder_videos/video.mp4', "wb") as f:
                 f.write(uploaded_file.getbuffer())
 
             # Cắt nhỏ video thành nhiều chunk
-            process_video('/input_video/video.mp4')
+            process_video('C:/Users/admin/folder_videos/video.mp4', 'C:/Users/admin/folder_videos/folder_chunk')
 
             # Gọi hàm summarize từ module model.py
-            summary = summarize('/input_video')
+            summary = summarize('C:/Users/admin/folder_videos/folder_chunk')
+            clear_memory()
 
             # Cập nhật placeholder với nội dung tóm tắt
             summary_placeholder.success("Tóm tắt đã sẵn sàng!")
