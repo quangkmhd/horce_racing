@@ -48,7 +48,7 @@ class GeminiVLCommentator:
         # Upload video
         upload_resp = self.client.files.upload(file=video_path)
         # Ensure the video is processed on the server side
-        time.sleep(30)
+        time.sleep(2)
 
         # Build prompt with context
         user_prompt = f"Context:\n{context}\n\n{prompt}"
@@ -121,5 +121,5 @@ Assume the audience is watching live and understands basic horse racing. Keep ea
         video_path = os.path.join(chunk_folder, video_file)
         print(f"Processing: {video_file}")
         result = commentator.generate_commentary(video_path, prompt, max_new_tokens)
-        summary += "\n\n" + result
+        summary += "\n\n" + "Next chunk\n" + result
     return summary
