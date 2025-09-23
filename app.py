@@ -53,6 +53,7 @@ with col2:
     if video_input_provided and video_to_display:
         with st.spinner("Đang xử lý video và tạo tóm tắt... ⏳"):
             # Lưu video input vào bộ nhớ
+            # clear_memory()
             os.makedirs(os.path.dirname('C:/Users/admin/folder_videos/video.mp4'), exist_ok=True)
             with open('C:/Users/admin/folder_videos/video.mp4', "wb") as f:
                 f.write(uploaded_file.getbuffer())
@@ -62,7 +63,8 @@ with col2:
 
             # Gọi hàm summarize từ module model.py
             summary = summarize('C:/Users/admin/folder_videos/folder_chunk')
-            clear_memory()
+            clear_memory()     # Chỉnh lại đường dẫn ở file video_processing hoặc input đường dẫn trực tiếp 
+                               # clear_memory('<Đường dẫn đến thư mục lưu video_chunk>', '<Đường dẫn đến file memory .json>')
 
             # Cập nhật placeholder với nội dung tóm tắt
             summary_placeholder.success("Tóm tắt đã sẵn sàng!")
