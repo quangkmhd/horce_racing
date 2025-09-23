@@ -103,7 +103,7 @@ The positions and movements of the horses (use visible numbers or names).
 The actions, posture, and strategy of the jockeys (e.g., leaning in, urging the horse, holding back).
 Any dramatic moments such as overtakes, surges, or struggles.
 Use a tone that builds excitement and tension, especially as the race progresses.
-Format your output like this:
+For example, the output format of chunk 1 will be like this:
 [00:01] Number 3 bursts out of the gate! The jockey in red is urging the horse forward with a strong whip motion.
 <Space>
 [00:10] Number 7 is gaining ground on the outside—its jockey crouched low, eyes locked on the leader.
