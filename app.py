@@ -63,7 +63,7 @@ with col2:
 
             # Gọi hàm summarize từ module model.py
             summary = summarize('C:/Users/admin/folder_videos/folder_chunk')
-            clear_memory()     # Chỉnh lại đường dẫn ở file video_processing hoặc input đường dẫn trực tiếp 
+            clear_memory()     # Chỉnh lại đường dẫn mặc định ở file video_processing hoặc input đường dẫn trực tiếp 
                                # clear_memory('<Đường dẫn đến thư mục lưu video_chunk>', '<Đường dẫn đến file memory .json>')
 
             # Cập nhật placeholder với nội dung tóm tắt
