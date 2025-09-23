@@ -53,7 +53,6 @@ with col2:
     if video_input_provided and video_to_display:
         with st.spinner("Đang xử lý video và tạo tóm tắt... ⏳"):
             # Lưu video input vào bộ nhớ
-            # clear_memory()
             os.makedirs(os.path.dirname('C:/Users/admin/folder_videos/video.mp4'), exist_ok=True)
             with open('C:/Users/admin/folder_videos/video.mp4', "wb") as f:
                 f.write(uploaded_file.getbuffer())
