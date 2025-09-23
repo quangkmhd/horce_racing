@@ -48,7 +48,7 @@ class GeminiVLCommentator:
         # Upload video
         upload_resp = self.client.files.upload(file=video_path)
         # Ensure the video is processed on the server side
-        time.sleep(2)
+        time.sleep(6) # 6s cho 3 chunk, mỗi chunk gần 20MB
 
         # Build prompt with context
         user_prompt = f"Context:\n{context}\n\n{prompt}"
