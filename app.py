@@ -70,8 +70,7 @@ with col2:
 
             # Gọi hàm summarize từ module model.py
             summary = summarize('horce_racing/folder_videos/folder_chunk')
-            clear_memory()     # Chỉnh lại đường dẫn mặc định ở file video_processing hoặc input đường dẫn trực tiếp 
-                               # clear_memory('<Đường dẫn đến thư mục lưu video_chunk>', '<Đường dẫn đến file memory .json>')
+            clear_memory('horce_racing/folder_videos/folder_chunk', 'horce_racing/memory/folder_chunk_memory.json') 
 
             # Cập nhật placeholder với nội dung tóm tắt
             summary_placeholder.success("Tóm tắt đã sẵn sàng!")
