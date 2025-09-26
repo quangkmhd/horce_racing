@@ -1,0 +1,16 @@
+/* Trong file style.css */
+.scrollable-box {
+    /* Thiết lập chiều cao tối đa cho khung */
+    max-height: 450px; 
+    
+    /* Bật thanh cuộn dọc TỰ ĐỘNG khi nội dung tràn */
+    overflow-y: auto; 
+    
+    /* Tùy chọn: Định dạng thẩm mỹ */
+    border: 1px solid #ccc; 
+    padding: 15px;         
+    border-radius: 8px;    
+    
+    /* Quan trọng: Cho phép văn bản tự động xuống dòng */
+    white-space: pre-wrap; 
+}
