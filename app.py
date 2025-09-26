@@ -3,6 +3,14 @@ import os
 from video_processing import process_video, clear_memory
 from model import summarize
 
+# Hàm để tải và tiêm CSS
+def local_css(file_name):
+    # Thay đổi: Thêm tham số encoding='utf-8'
+    with open(file_name, encoding='utf-8') as f:
+        st.markdown(f'<style>{f.read()}</style>', unsafe_allow_html=True)
+# Tải CSS từ file
+local_css("style.css")
+
 # --- Cấu hình trang ---
 st.set_page_config(
     layout="wide",
@@ -53,21 +61,29 @@ with col2:
     if video_input_provided and video_to_display:
         with st.spinner("Đang xử lý video và tạo tóm tắt... ⏳"):
             # Lưu video input vào bộ nhớ
-            os.makedirs(os.path.dirname('C:/Users/admin/folder_videos/video.mp4'), exist_ok=True)
-            with open('C:/Users/admin/folder_videos/video.mp4', "wb") as f:
+            os.makedirs(os.path.dirname('horce_racing/folder_videos/video.mp4'), exist_ok=True)
+            with open('horce_racing/folder_videos/video.mp4', "wb") as f:
                 f.write(uploaded_file.getbuffer())
 
             # Cắt nhỏ video thành nhiều chunk
-            process_video('C:/Users/admin/folder_videos/video.mp4', 'C:/Users/admin/folder_videos/folder_chunk')
+            process_video('horce_racing/folder_videos/video.mp4', 'horce_racing/folder_videos/folder_chunk')
 
             # Gọi hàm summarize từ module model.py
-            summary = summarize('C:/Users/admin/folder_videos/folder_chunk')
+            summary = summarize('horce_racing/folder_videos/folder_chunk')
             clear_memory()     # Chỉnh lại đường dẫn mặc định ở file video_processing hoặc input đường dẫn trực tiếp 
                                # clear_memory('<Đường dẫn đến thư mục lưu video_chunk>', '<Đường dẫn đến file memory .json>')
 
             # Cập nhật placeholder với nội dung tóm tắt
             summary_placeholder.success("Tóm tắt đã sẵn sàng!")
-            st.markdown(f"<p style='white-space: pre-wrap;'>{summary}</p>", unsafe_allow_html=True)
+            # Cuộn nội dung nếu quá dài
+            st.markdown(
+                f"""
+                <div class="scrollable-box">
+                    {summary}
+                </div> 
+                """,
+                unsafe_allow_html=True
+            )
             st.button("Rerun")
 
 # --- Footer ---
