@@ -51,17 +51,29 @@ def process_video(input_path, output_folder):
     print("Video processing complete!")
 
 
-def clear_memory(video_chunk='C:/Users/admin/folder_videos/folder_chunk', memory='C:/Users/admin/Lib/memory/folder_chunk_memory.json'):
+def clear_memory(video_chunk, memory):
     # Xóa memory
-    os.remove(memory)
+    try:
+        os.remove(memory)
+        print('Đã xóa memory!')
+    except FileNotFoundError:
+        pass
+    except PermissionError as e:
+        print(f"CẢNH BÁO: Không thể xóa file {memory}. Lỗi: {e}")
+        pass
 
-    # Tạo mẫu tìm kiếm cho tất cả các tệp .mp4 trong thư mục
-    sample_file = os.path.join(video_chunk, "*.mp4")
-    # Tìm tất cả các tệp khớp với mẫu
-    video_paths = glob.glob(sample_file)
-    # Lặp qua danh sách và xóa từng tệp
-    for video in video_paths:
-        os.remove(video)
-        print(f"Đã xóa: {video}")
-    print('Đã xóa bộ nhớ!')
-    
+    # Xóa video_chunk
+    try:
+        # Tạo mẫu tìm kiếm cho tất cả các tệp .mp4 trong thư mục
+        sample_file = os.path.join(video_chunk, "*.mp4")
+        # Tìm tất cả các tệp khớp với mẫu
+        video_paths = glob.glob(sample_file)
+        # Lặp qua danh sách và xóa từng tệp
+        for video in video_paths:
+            os.remove(video)
+            print(f"Đã xóa: {video}")
+    except FileNotFoundError:
+        pass
+    except PermissionError as e:
+        print(f"CẢNH BÁO: Không thể xóa file {memory}. Lỗi: {e}")
+        pass
