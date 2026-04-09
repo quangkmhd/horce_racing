@@ -1,0 +1,23 @@
+[project]
+name = "horce-racing"
+version = "0.1.0"
+description = "Automated Vietnamese horse race commentary using Gemini VL"
+requires-python = ">=3.10"
+dependencies = [
+    "google-genai",
+    "moviepy",
+    "python-dotenv",
+    "loguru",
+    "typer",
+    "pydantic-settings"
+]
+
+[project.scripts]
+horce-racing = "horce_racing.cli.main:app"
+
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.packages.find]
+where = ["src"]
