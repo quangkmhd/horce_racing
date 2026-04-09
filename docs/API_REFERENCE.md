@@ -1,73 +1,43 @@
 # API & Class Reference: AI Horse Racing Live Commentator
 
-This document outlines the primary classes and methods available in the `horce_racing` repository.
+## 1. Commentator Engine (`src/horce_racing/core/model.py`)
 
-## 1. Main Application (`model.py`)
+### `class GeminiCommentator`
+Handles video uploads and generates commentary via the Gemini 2.0 Flash API.
 
-### `class GeminiVLCommentator`
-The central class responsible for interacting with the Google Generative AI API and orchestrating the commentary generation.
+#### `__init__(self, api_key: str, model_name: str, memory_store: str | Path)`
+Initializes the Google GenAI client and attaches a `MemoryManager`.
 
-#### `__init__(self, api_key: str = None)`
-Initializes the commentator.
-- `api_key`: Your Google Gemini API key. If not provided, it attempts to load `GOOGLE_GENAI_API_KEY` from the environment.
+#### `generate_commentary(self, video_path: str | Path, prompt: str) -> str`
+- **Uploads** the video segment.
+- **Polls** for processing status (simulated with sleep).
+- **Generates** commentary with historical context injected.
+- **Saves** results to the memory store automatically.
 
-#### `generate_commentary(self, video_path: str, prompt: str = None, context: str = "") -> str`
-Uploads a video and generates commentary based on the prompt and injected context.
-- `video_path`: Absolute or relative path to the MP4 file.
-- `prompt`: The specific instructions for the AI. If `None`, uses the default energetic broadcaster persona.
-- `context`: The historical state of the race injected by the Memory Manager.
-- **Returns:** A string containing the generated commentary.
+## 2. Memory Management (`src/horce_racing/core/memory.py`)
 
-#### `upload_video(self, video_path: str)`
-Helper method to handle the file upload to Google's servers.
-- **Note:** Video processing on Google's end is asynchronous. This method handles the necessary polling/waiting until the video is in an `ACTIVE` state ready for inference.
+### `class MemoryManager`
+Manages the persistent state of the race using JSON storage.
 
-## 2. Memory Management (`memory_manager.py`)
+#### `segment_processed(self, segment_id: str) -> bool`
+Checks if a segment has already been analyzed to avoid duplicate API costs.
 
-### `class RaceMemory`
-Handles the persistent state of the race across video chunks.
+#### `save_segment(self, segment_id: str, start: int, end: int, commentary: str)`
+Persists a new entry to the JSON store.
 
-#### `__init__(self, memory_file: str = "memory/race_state.json")`
-- `memory_file`: Path to the JSON file where state is persisted.
+#### `get_context(self, upto_start: int, window: int = 5) -> str`
+Retrieves the commentary of the last `window` segments occurring before `upto_start`.
 
-#### `update_state(self, commentary_text: str)`
-Parses the newly generated commentary and updates the internal JSON state.
-- `commentary_text`: The output from `generate_commentary`.
-- *(Implementation Detail)*: This may use a secondary, faster LLM call with structured output to extract JSON keys like `{"leader": "Horse 5", "incidents": "None"}` from the raw text.
+## 3. Video Processing (`src/horce_racing/core/video.py`)
 
-#### `get_context_string(self) -> str`
-Formats the current JSON state into a human-readable string suitable for prepending to a prompt.
-- **Returns:** E.g., `"Context from previous clip: The race has been going for 40 seconds. Horse 2 is leading by a length..."`
+### `process_video(input_path: str | Path, output_folder: str | Path)`
+Functional implementation of the video pipeline.
+- Splices video into chunks.
+- Resizes and optimizes FPS for AI Vision.
+- Uses `moviepy` as the underlying engine.
 
-#### `reset_memory(self)`
-Deletes the JSON file. Crucial to call before starting a brand new race to prevent hallucinating horses from previous events.
+## 4. CLI Interface (`src/horce_racing/cli/main.py`)
 
-## 3. Video Processing (`video_processing.py`)
-
-### `class VideoChunker`
-Utility class for preparing raw broadcasts.
-
-#### `chunk_video(self, input_video: str, output_dir: str, chunk_duration: int = 10)`
-Splits a long video into shorter segments.
-- `input_video`: Path to full race video.
-- `output_dir`: Where to save the chunks.
-- `chunk_duration`: Length of each chunk in seconds. Default is 10.
-
-## 4. Execution Script
-
-When running `python model.py` directly from the CLI, it executes a `__main__` block that iterates through a hardcoded directory.
-
-**Standard Flow in CLI:**
-```python
-if __name__ == "__main__":
-    commentator = GeminiVLCommentator()
-    memory = RaceMemory()
-    memory.reset_memory()
-    
-    videos = sorted(os.listdir("./video_chunks"))
-    for video in videos:
-        context = memory.get_context_string()
-        commentary = commentator.generate_commentary(f"./video_chunks/{video}", context=context)
-        print(commentary)
-        memory.update_state(commentary)
-```
+The project uses `typer` to expose these functionalities:
+- `horce-racing process [VIDEO_PATH]`: Triggers `process_video`.
+- `horce-racing commentate [CHUNK_DIR]`: Orchestrates `GeminiCommentator` across multiple files.
